@@ -6,9 +6,12 @@ import time
 import numpy as np
 
 from matplotlib.patches import Rectangle
+from matplotlib.animation import FuncAnimation
 
 import point
 import random_map
+
+
 
 class AStar:
     def __init__(self, map):
@@ -58,7 +61,9 @@ class AStar:
 
     def SaveImage(self, plt):
         millis = int(round(time.time() * 1000))
-        filename = './' + str(millis) + '.png'
+        # filename = './ans/' + 'Astar_' +str(millis) + '.png'
+        # filename = './ans/' + 'bfs_' +str(millis) + '.png'
+        filename = './ans/' + 'dfs_' +str(millis) + '.png'
         plt.savefig(filename)
 
     def ProcessPoint(self, x, y, parent):
@@ -67,11 +72,12 @@ class AStar:
         p = point.Point(x, y)
         if self.IsInCloseList(p):
             return # Do nothing for visited point
-        print('Process Point [', p.x, ',', p.y, ']', ', cost: ', p.cost)
         if not self.IsInOpenList(p):
             p.parent = parent
             p.cost = self.TotalCost(p)
             self.open_set.append(p)
+        print('Process Point [', p.x, ',', p.y, ']', ', cost: ', p.cost)
+        
 
     def SelectPointInOpenList(self):
         index = 0
@@ -84,6 +90,21 @@ class AStar:
                 selected_index = index
             index += 1
         return selected_index
+    
+    def SelectPointInOpenList_BFS(self):
+        selected_index = -1
+        if(len(self.open_set) != 0):
+            index = 0
+            selected_index = index
+        return selected_index
+    
+    def SelectPointInOpenList_DFS(self):
+        selected_index = -1
+        if(len(self.open_set) != 0):
+            index = len(self.open_set) - 1
+            selected_index = index
+        return selected_index
+
 
     def BuildPath(self, p, ax, plt, start_time):
         path = []
@@ -97,7 +118,8 @@ class AStar:
             rec = Rectangle((p.x, p.y), 1, 1, color='g')
             ax.add_patch(rec)
             plt.draw()
-            self.SaveImage(plt)
+            plt.pause(0.001)
+        self.SaveImage(plt)
         end_time = time.time()
         print('===== Algorithm finish in', int(end_time-start_time), ' seconds')
 
@@ -109,14 +131,18 @@ class AStar:
         self.open_set.append(start_point)
 
         while True:
-            index = self.SelectPointInOpenList()
+            # index = self.SelectPointInOpenList()
+            # index = self.SelectPointInOpenList_BFS()
+            index = self.SelectPointInOpenList_DFS()
             if index < 0:
                 print('No path found, algorithm failed!!!')
                 return
             p = self.open_set[index]
             rec = Rectangle((p.x, p.y), 1, 1, color='c')
             ax.add_patch(rec)
-            self.SaveImage(plt)
+            plt.draw()
+            plt.pause(0.001)
+            # self.SaveImage(plt)
 
             if self.IsEndPoint(p):
                 return self.BuildPath(p, ax, plt, start_time)
@@ -135,7 +161,3 @@ class AStar:
             self.ProcessPoint(x+1, y, p)
             self.ProcessPoint(x+1, y+1, p)
             self.ProcessPoint(x, y+1, p)
-
-
-
-

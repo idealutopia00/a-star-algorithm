@@ -25,7 +25,7 @@ for i in range(map.size):
             rec = Rectangle((i, j), width=1, height=1, edgecolor='gray', facecolor='w')
             ax.add_patch(rec)
 
-rec = Rectangle((0, 0), width = 1, height = 1, facecolor='b')
+rec = Rectangle((0, 0), width = 1, height = 1, facecolor='r')
 ax.add_patch(rec)
 
 rec = Rectangle((map.size-1, map.size-1), width = 1, height = 1, facecolor='r')
@@ -34,8 +34,12 @@ ax.add_patch(rec)
 plt.axis('equal')
 plt.axis('off')
 plt.tight_layout()
-#plt.show()
 
+
+# plt.ion()  # 开启交互式模式
 a_star = a_star.AStar(map)
 a_star.RunAndSaveImage(ax, plt)
+# plt.ioff()  # 关闭交互式模式
+
+
 
